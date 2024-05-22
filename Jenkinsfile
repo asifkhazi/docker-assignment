@@ -1,7 +1,6 @@
 pipeline {
 	agent {label "new-node"}
 	environment {
-                ECR_Repo="myecrrepopri"
                 ECR_URI=credentials('ECR_URI')
 	}
 	stages {
@@ -12,18 +11,18 @@ pipeline {
 		}
 		stage ('Build Satge') {
 			steps {
-				sh 'docker build -t ${ECR_URI}/${ECR_Repo}:${BUILD_NUMBER} .'
+				sh 'docker build -t ${ECR_URI}:${BUILD_NUMBER} .'
 			}
 		}
 		stage ('Push Stage') {
 			steps {
        			        sh 'echo "Login Succeded"'
-				sh 'docker push ${ECR_URI}/${ECR_Repo}:${BUILD_NUMBER}'
+				sh 'docker push ${ECR_URI}:${BUILD_NUMBER}'
 			}
 		}
 		stage ('Deploy Satge') {
 			steps {
-				sh 'docker run -d --name cont-${BUILD_NUMBER} -p 8080:8080 ${ECR_URI}/${ECR_Repo}:${BUILD_NUMBER}'
+				sh 'docker run -d --name cont-${BUILD_NUMBER} -p 8080:8080 ${ECR_URI}:${BUILD_NUMBER}'
 			}
 		}
 	}	
