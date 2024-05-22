@@ -2,8 +2,8 @@ pipeline {
 	agent {label "new-node"}
 	environment {
 		ECR_Login=credentials('ECR_Login')
-    ECR_Repo="myecrrepo"
-    ECR_URI=credentials('ECR_URI')
+                ECR_Repo="myecrrepo"
+                ECR_URI=credentials('ECR_URI')
 	}
 	stages {
 		stage ('SCM Checkout Stage') {
@@ -19,7 +19,7 @@ pipeline {
 		stage ('Push Stage') {
 			steps {
 				sh '${ECR_Login}'
-        sh 'echo "Login Succeded"'
+       			        sh 'echo "Login Succeded"'
 				sh 'docker puch ${ECR_URI}/${ECR_Repo}:${BUILD_NUMBER}'
 			}
 		}
