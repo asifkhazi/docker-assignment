@@ -1,7 +1,6 @@
 pipeline {
 	agent {label "new-node"}
 	environment {
-		ECR_Login=credentials('ECR_Login')
                 ECR_Repo="myecrrepopri"
                 ECR_URI=credentials('ECR_URI')
 	}
@@ -18,7 +17,6 @@ pipeline {
 		}
 		stage ('Push Stage') {
 			steps {
-				sh '${ECR_Login}'
        			        sh 'echo "Login Succeded"'
 				sh 'docker push ${ECR_URI}/${ECR_Repo}:${BUILD_NUMBER}'
 			}
