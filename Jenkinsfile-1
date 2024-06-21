@@ -1,0 +1,25 @@
+pipeline {
+	agent any
+	stages {
+		stage ('SCM Checkout') {
+			steps {
+				git branch: 'main', url:'https://github.com/asifkhazi/docker-assignment.git'
+			}
+		}
+		stage ('Build') {
+			steps {
+				sh 'mvn clean install'
+			}
+		}
+		stage ('Docker Image Build') {
+			steps {
+				sh 'docker build -t tomcat:${BUILD_NUMBER} -f Dockerfile-1 .'
+			}
+		}
+		stage ('Deploy To Docker Env') {
+			steps {
+				sh 'docker run -d --name tomcat-${BUILD_NUMBER} -p 8080:8080 tomcat:${BUILD_NUMBER}'
+			}
+		}
+	}	
+}
