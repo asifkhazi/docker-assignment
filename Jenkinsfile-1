@@ -9,11 +9,6 @@ pipeline {
 				git branch: 'main', url:'https://github.com/asifkhazi/docker-assignment.git'
 			}
 		}
-		stage ('Build') {
-			steps {
-				sh 'mvn clean install'
-			}
-		}
 		stage ('Docker Image Build') {
 			steps {
 				sh 'docker build -t tomcat:${BUILD_NUMBER} -f Dockerfile-1 .'
