@@ -1,7 +1,10 @@
 pipeline {
-	agent any
+	agent { label 'docker-env' }
 	tools {
 		maven 'maven'
+	}
+	environment {
+		docker_cred = credentials('docker_cred')
 	}
 	stages {
 		stage ('SCM Checkout') {
@@ -9,14 +12,21 @@ pipeline {
 				git branch: 'main', url:'https://github.com/asifkhazi/docker-assignment.git'
 			}
 		}
-		stage ('Docker Image Build') {
+		stage ('Build') {
 			steps {
-				sh 'docker build -t tomcat:${BUILD_NUMBER} -f Dockerfile-1 .'
+				sh 'mvn clean install'
 			}
 		}
-		stage ('Deploy To Docker Env') {
+		stage ('Build & Push Docker Image') {
 			steps {
-				sh 'docker run -d --name tomcat-${BUILD_NUMBER} -p 8080:8080 tomcat:${BUILD_NUMBER}'
+				sh 'docker build -t ${docker_cred_USR}/tomcat:${BUILD_NUMBER} -f Dockerfile-1 .'
+				sh 'docker login -u ${docker_cred_USR} -p ${docker_cred_PSW}'
+				sh 'docker push ${docker_cred_USR}/tomcat:${BUILD_NUMBER}'
+			}
+		}
+		stage ('Deploy To Docker Environment') {
+			steps {
+				sh 'docker run -d --name tomcat-${BUILD_NUMBER} -p 8080:8080 ${docker_cred_USR}/tomcat:${BUILD_NUMBER}'
 			}
 		}
 	}	
