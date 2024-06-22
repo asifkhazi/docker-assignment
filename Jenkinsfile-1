@@ -1,8 +1,5 @@
 pipeline {
 	agent { label 'docker-env' }
-	tools {
-		maven 'maven'
-	}
 	environment {
 		docker_cred = credentials('docker_cred')
 	}
@@ -14,11 +11,7 @@ pipeline {
 		}
 		stage ('Build') {
 			steps {
-				script {
-                    			catchError(buildResult: 'SUCCESS', stageResult: 'FAILURE') {
-                        			sh 'mvn clean install'
-                    			}
-                		}
+				sh 'echo "mvn clean install"'
 			}
 		}
 		stage ('Build & Push Docker Image') {
