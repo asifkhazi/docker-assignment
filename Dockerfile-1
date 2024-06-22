@@ -1,9 +1,9 @@
-FROM maven:amazoncorretto AS build
+FROM maven:amazoncorretto as maven
 WORKDIR /app
 COPY . .
 RUN mvn clean install
 
 FROM artisantek/tomcat:1
-COPY --from=build /app/target/*.war /usr/local/tomcat/webapps/
+COPY --from=maven /app/target/*.war /usr/local/tomcat/webapps/
 EXPOSE 8080
-ENTRYPOINT ["run", "catalina.sh"]
+ENTRYPOINT ["catalina.sh", "run"]
